@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sky Dine — Table 1</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0A0A0A;--black2:#111111;
+  --gold:#C9A84C;--gold-l:#F0D080;
+  --gold-bg:rgba(201,168,76,0.08);--gold-border:rgba(201,168,76,0.25);
+  --white:#FFFFFF;--white-dim:rgba(255,255,255,0.55);--white-faint:rgba(255,255,255,0.07);
+  --red:#E05252;--red-dim:rgba(224,82,82,0.12);
+  --green:#4CAF7D;--green-dim:rgba(76,175,125,0.12);
+  --border:rgba(255,255,255,0.08);
+}
+html,body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+
+.header{width:100%;padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.h-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;letter-spacing:0.5px;line-height:1;}
+.h-tagline{font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-top:3px;}
+.h-table-label{font-size:9px;color:var(--white-dim);letter-spacing:1.5px;text-transform:uppercase;text-align:right;}
+.h-table-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--gold);line-height:1;text-align:right;}
+.gold-line{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.35;}
+
+.card{width:100%;max-width:420px;padding:26px 20px;margin:18px 14px;background:var(--black2);border:1px solid var(--border);border-radius:20px;position:relative;}
+.card::before{content:'';position:absolute;top:-1px;left:-1px;width:20px;height:20px;border-top:2px solid var(--gold);border-left:2px solid var(--gold);border-radius:20px 0 0 0;opacity:0.5;}
+.card::after{content:'';position:absolute;bottom:-1px;right:-1px;width:20px;height:20px;border-bottom:2px solid var(--gold);border-right:2px solid var(--gold);border-radius:0 0 20px 0;opacity:0.5;}
+
+.screen{display:none}.screen.active{display:block;animation:fadeUp 0.35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.ornament{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;}
+.orn-line{width:36px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));opacity:0.45;}
+.orn-line.r{background:linear-gradient(90deg,var(--gold),transparent);}
+.orn-diamond{width:5px;height:5px;background:var(--gold);transform:rotate(45deg);opacity:0.6;}
+
+/* LANGUAGE */
+.lang-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;text-align:center;margin-bottom:6px;}
+.lang-sub{font-size:12px;color:var(--white-dim);text-align:center;margin-bottom:24px;line-height:1.6;}
+.lang-grid{display:flex;flex-direction:column;gap:10px;}
+.lang-btn{width:100%;padding:16px 18px;background:var(--white-faint);border:1px solid var(--border);border-radius:14px;color:var(--white);font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:12px;transition:all 0.18s;text-align:left;}
+.lang-btn:hover{border-color:var(--gold-border);background:var(--gold-bg);}
+.lb-emoji{font-size:22px;}
+.lb-main{font-size:14px;font-weight:600;display:block;}
+.lb-sub{font-size:11px;color:var(--white-dim);display:block;margin-top:1px;}
+
+/* STARS */
+.s-head{text-align:center;margin-bottom:26px;}
+.s-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;margin-bottom:6px;}
+.s-sub{font-size:12px;color:var(--white-dim);line-height:1.6;}
+.stars-wrap{display:flex;justify-content:center;gap:8px;margin-bottom:8px;}
+.star{font-size:44px;color:rgba(255,255,255,0.1);cursor:pointer;transition:color 0.12s,transform 0.18s;user-select:none;line-height:1;}
+.star.lit{color:var(--gold);filter:drop-shadow(0 0 5px rgba(201,168,76,0.35));}
+.star:hover{transform:scale(1.15);}
+.star-label{text-align:center;height:20px;font-size:13px;font-weight:500;color:var(--gold);margin-bottom:20px;}
+
+/* KEYPOINTS */
+.kp-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;text-align:center;margin-bottom:4px;}
+.kp-sub{font-size:12px;color:var(--white-dim);text-align:center;margin-bottom:20px;line-height:1.6;}
+.sec-label{font-size:10px;font-weight:600;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--gold-border);}
+.kp-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.kp-chip{padding:11px 10px;border-radius:12px;border:1px solid var(--border);background:var(--white-faint);color:var(--white-dim);font-size:12px;font-weight:500;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;line-height:1.3;transition:all 0.15s;}
+.kp-chip .ci{font-size:18px;line-height:1;}
+.kp-chip:hover{border-color:var(--gold-border);background:var(--gold-bg);}
+.kp-chip.sp{border-color:var(--gold);background:var(--gold-bg);color:var(--gold-l);}
+.kp-chip.sn{border-color:var(--red);background:var(--red-dim);color:#FF8A8A;}
+
+/* PROMPT BOX */
+.prompt-wrap{background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:14px;padding:16px;margin-bottom:14px;}
+.pw-label{font-size:10px;font-weight:600;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
+.pw-text{font-size:13px;color:var(--white-dim);line-height:1.75;font-style:italic;}
+.regen-btn{width:100%;padding:10px;background:transparent;border:1px solid var(--gold-border);border-radius:10px;color:var(--gold);font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:10px;transition:all 0.18s;}
+.regen-btn:hover{background:var(--gold-bg);}
+.copy-btn{width:100%;padding:13px;background:linear-gradient(135deg,#C9A84C,#F0D080);color:#0A0A0A;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;margin-bottom:8px;}
+.copy-btn:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(201,168,76,0.3);}
+.copy-ok{text-align:center;font-size:11px;color:var(--green);display:none;margin-bottom:8px;}
+.g-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px;background:var(--white);border:none;border-radius:14px;color:#1A1A1A;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:all 0.2s;font-family:'Inter',sans-serif;margin-bottom:8px;}
+.g-btn:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(255,255,255,0.15);}
+
+/* DESCRIBE */
+.field-label{font-size:11px;font-weight:500;color:var(--white-dim);letter-spacing:0.4px;margin-bottom:7px;display:flex;align-items:center;gap:6px;}
+.req-tag{font-size:9px;color:var(--red);background:var(--red-dim);padding:2px 6px;border-radius:8px;}
+.opt-tag{font-size:9px;color:rgba(255,255,255,0.25);background:var(--white-faint);padding:2px 6px;border-radius:8px;}
+.desc-ta{width:100%;background:var(--white-faint);border:1px solid var(--border);border-radius:12px;padding:12px 14px;color:var(--white);font-size:13px;font-family:'Inter',sans-serif;outline:none;resize:none;min-height:88px;line-height:1.6;transition:border 0.2s;margin-bottom:4px;}
+.desc-ta:focus{border-color:var(--gold-border);}
+.desc-ta::placeholder{color:rgba(255,255,255,0.18);}
+.field-err{font-size:11px;color:var(--red);margin-bottom:12px;display:none;}
+.field-input{width:100%;background:var(--white-faint);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--white);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border 0.2s;margin-bottom:14px;}
+.field-input:focus{border-color:var(--gold-border);}
+.field-input::placeholder{color:rgba(255,255,255,0.18);}
+
+/* BUTTONS */
+.btn{width:100%;padding:15px;border:none;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:0.3px;transition:all 0.2s;margin-bottom:6px;}
+.btn-gold{background:linear-gradient(135deg,#C9A84C,#F0D080);color:#0A0A0A;}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(201,168,76,0.3);}
+.btn-dark{background:var(--white-faint);color:var(--white);border:1px solid var(--border);}
+.btn-dark:hover{background:rgba(255,255,255,0.12);}
+
+/* BAD RESULT */
+.res-icon{width:68px;height:68px;border-radius:50%;background:var(--gold-bg);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 14px;}
+.res-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;text-align:center;margin-bottom:6px;}
+.res-msg{font-size:12px;color:var(--white-dim);text-align:center;line-height:1.7;margin-bottom:18px;}
+.priv-box{background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:14px;padding:16px;margin-bottom:14px;}
+.priv-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.priv-icon{width:34px;height:34px;background:rgba(201,168,76,0.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.priv-t{font-size:13px;font-weight:600;}
+.priv-s{font-size:10px;color:var(--white-dim);margin-top:1px;}
+.priv-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--white-faint);border-radius:8px;margin-bottom:6px;font-size:11px;color:var(--white-dim);}
+.priv-row:last-child{margin-bottom:0;}
+.priv-row strong{color:var(--white);}
+
+/* TIMER */
+.timer-box{background:rgba(224,82,82,0.06);border:1px solid rgba(224,82,82,0.2);border-radius:14px;padding:16px;margin-bottom:14px;text-align:center;}
+.timer-lbl{font-size:10px;font-weight:600;color:var(--red);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.timer-num{font-size:38px;font-weight:700;color:var(--red);font-variant-numeric:tabular-nums;letter-spacing:3px;margin-bottom:4px;}
+.timer-sub{font-size:11px;color:rgba(255,255,255,0.3);}
+
+/* TIMELINE */
+.tl-box{background:var(--white-faint);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;}
+.tl-lbl{font-size:10px;font-weight:600;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;}
+.tl-step{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;}
+.tl-step:last-child{margin-bottom:0;}
+.tl-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:4px;opacity:0.6;}
+.tl-dot.done{background:var(--green);opacity:1;}
+.tl-txt{font-size:11px;color:var(--white-dim);line-height:1.5;}
+.tl-txt strong{color:var(--white);}
+
+.anon-note{background:var(--white-faint);border-radius:10px;padding:11px 13px;font-size:11px;color:var(--white-dim);line-height:1.6;margin-bottom:14px;}
+.anon-note strong{color:var(--white);}
+
+/* ESCALATION */
+.esc-box{background:rgba(224,82,82,0.06);border:1px solid rgba(224,82,82,0.2);border-radius:14px;padding:20px;margin-bottom:16px;text-align:center;}
+.esc-icon{font-size:42px;margin-bottom:10px;}
+.esc-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--red);margin-bottom:6px;}
+.esc-msg{font-size:12px;color:var(--white-dim);line-height:1.6;}
+
+.skip-link{text-align:center;font-size:11px;color:rgba(255,255,255,0.22);cursor:pointer;margin-top:12px;transition:color 0.2s;}
+.skip-link:hover{color:var(--white-dim);}
+.footer{text-align:center;padding:10px 0 28px;font-size:10px;color:rgba(255,255,255,0.18);letter-spacing:0.5px;}
+.footer span{color:var(--gold);opacity:0.6;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="h-name">Sky Dine</div>
+    <div class="h-tagline">Multi-Cuisine · BBQ · Western · Ajmer</div>
+  </div>
+  <div>
+    <div class="h-table-label">Table</div>
+    <div class="h-table-num">01</div>
+  </div>
+</div>
+<div class="gold-line"></div>
+
+<div class="card">
+
+  <!-- SCREEN 0: LANGUAGE -->
+  <div class="screen active" id="s0">
+    <div class="ornament"><div class="orn-line"></div><div class="orn-diamond"></div><div class="orn-line r"></div></div>
+    <div class="lang-title">Choose Language</div>
+    <div class="lang-sub">Apni preferred language select karein</div>
+    <div class="lang-grid">
+      <button class="lang-btn" onclick="setLang('en')">
+        <span class="lb-emoji">🇬🇧</span>
+        <div><span class="lb-main">English</span><span class="lb-sub">Continue in English</span></div>
+      </button>
+      <button class="lang-btn" onclick="setLang('hi')">
+        <span class="lb-emoji">🇮🇳</span>
+        <div><span class="lb-main">हिंदी</span><span class="lb-sub">हिंदी में जारी रखें</span></div>
+      </button>
+      <button class="lang-btn" onclick="setLang('hg')">
+        <span class="lb-emoji">✨</span>
+        <div><span class="lb-main">Hinglish</span><span class="lb-sub">Hindi + English mix</span></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- SCREEN 1: STARS -->
+  <div class="screen" id="s1">
+    <div class="s-head">
+      <div class="ornament"><div class="orn-line"></div><div class="orn-diamond"></div><div class="orn-line r"></div></div>
+      <div class="s-title" id="s1T">How was your experience?</div>
+      <div class="s-sub" id="s1S">Tap a star to rate your visit</div>
+    </div>
+    <div class="stars-wrap">
+      <span class="star" data-v="1">★</span>
+      <span class="star" data-v="2">★</span>
+      <span class="star" data-v="3">★</span>
+      <span class="star" data-v="4">★</span>
+      <span class="star" data-v="5">★</span>
+    </div>
+    <div class="star-label" id="starLbl"></div>
+  </div>
+
+  <!-- SCREEN 2: GOOD KEYPOINTS -->
+  <div class="screen" id="s2">
+    <div class="kp-title" id="s2T">What did you love?</div>
+    <div class="kp-sub" id="s2S">Select all that apply</div>
+    <div class="sec-label" id="s2L1">Food & Drinks</div>
+    <div class="kp-grid" id="goodGrid1">
+      <div class="kp-chip" data-k="food"><span class="ci">🍽️</span><span class="kt" id="k_food"></span></div>
+      <div class="kp-chip" data-k="taste"><span class="ci">😋</span><span class="kt" id="k_taste"></span></div>
+      <div class="kp-chip" data-k="portion"><span class="ci">🥘</span><span class="kt" id="k_portion"></span></div>
+      <div class="kp-chip" data-k="variety"><span class="ci">📋</span><span class="kt" id="k_variety"></span></div>
+    </div>
+    <div class="sec-label" id="s2L2">Service & Ambiance</div>
+    <div class="kp-grid" id="goodGrid2">
+      <div class="kp-chip" data-k="service"><span class="ci">⚡</span><span class="kt" id="k_service"></span></div>
+      <div class="kp-chip" data-k="staff"><span class="ci">🙏</span><span class="kt" id="k_staff"></span></div>
+      <div class="kp-chip" data-k="ambiance"><span class="ci">✨</span><span class="kt" id="k_ambiance"></span></div>
+      <div class="kp-chip" data-k="value"><span class="ci">💰</span><span class="kt" id="k_value"></span></div>
+    </div>
+    <button class="btn btn-gold" onclick="buildPrompt()">Generate My Review →</button>
+  </div>
+
+  <!-- SCREEN 3: GENERATED PROMPT -->
+  <div class="screen" id="s3">
+    <div class="kp-title" id="s3T">Your Review is Ready! ✨</div>
+    <div class="kp-sub" id="s3S">Copy it and paste on Google Reviews</div>
+    <div class="prompt-wrap">
+      <div class="pw-label" id="pwL">YOUR REVIEW</div>
+      <div class="pw-text" id="promptText"></div>
+    </div>
+    <button class="regen-btn" onclick="buildPrompt()">🔄 <span id="regenT">Generate Different Version</span></button>
+    <button class="copy-btn" onclick="doCopy()"><span id="copyT">📋 Copy Review</span></button>
+    <div class="copy-ok" id="copyOk">✅ <span id="copiedT">Copied! Now paste on Google Reviews</span></div>
+    <a class="g-btn" href="#" id="gBtn" onclick="event.preventDefault();alert('Demo: Actual Google Review link hoga yahan.');">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      <span id="gBtnT">Open Google Reviews</span>
+    </a>
+    <div class="skip-link" onclick="show('s2')">← Change selections</div>
+  </div>
+
+  <!-- SCREEN 4: BAD KEYPOINTS -->
+  <div class="screen" id="s4">
+    <div class="kp-title" id="s4T">What went wrong?</div>
+    <div class="kp-sub" id="s4S">Select all — only manager will see this</div>
+    <div class="sec-label" id="s4L1">Food Issue</div>
+    <div class="kp-grid">
+      <div class="kp-chip" data-k="bfood"><span class="ci">🥶</span><span class="kt" id="k_bfood"></span></div>
+      <div class="kp-chip" data-k="btaste"><span class="ci">😔</span><span class="kt" id="k_btaste"></span></div>
+      <div class="kp-chip" data-k="bportion"><span class="ci">😤</span><span class="kt" id="k_bportion"></span></div>
+      <div class="kp-chip" data-k="bquality"><span class="ci">👎</span><span class="kt" id="k_bquality"></span></div>
+    </div>
+    <div class="sec-label" id="s4L2">Service Issue</div>
+    <div class="kp-grid">
+      <div class="kp-chip" data-k="bservice"><span class="ci">🐢</span><span class="kt" id="k_bservice"></span></div>
+      <div class="kp-chip" data-k="bstaff"><span class="ci">😕</span><span class="kt" id="k_bstaff"></span></div>
+      <div class="kp-chip" data-k="bclean"><span class="ci">🧹</span><span class="kt" id="k_bclean"></span></div>
+      <div class="kp-chip" data-k="bprice"><span class="ci">💸</span><span class="kt" id="k_bprice"></span></div>
+    </div>
+    <div style="margin-bottom:14px">
+      <div class="field-label"><span id="descL">Describe your issue</span><span class="req-tag">Required</span></div>
+      <textarea class="desc-ta" id="descTa" placeholder="Please describe what happened..."></textarea>
+      <div class="field-err" id="descErr">Please describe your issue before submitting</div>
+    </div>
+    <div style="margin-bottom:4px">
+      <div class="field-label"><span id="phoneL">Your WhatsApp number</span><span class="opt-tag">optional</span></div>
+      <input class="field-input" id="phoneIn" type="tel" placeholder="+91 XXXXX XXXXX"/>
+    </div>
+    <button class="btn btn-dark" onclick="submitBad()" id="subBadBtn">Send Private Feedback</button>
+  </div>
+
+  <!-- SCREEN 5: BAD RESULT + TIMER -->
+  <div class="screen" id="s5">
+    <div style="text-align:center;margin-bottom:18px">
+      <div class="res-icon">🙏</div>
+      <div class="res-title" id="s5T">Feedback Received</div>
+      <div class="res-msg" id="s5S">Manager has been alerted and will resolve this within 24 hours.</div>
+    </div>
+    <div class="priv-box">
+      <div class="priv-head">
+        <div class="priv-icon">🔒</div>
+        <div><div class="priv-t" id="privT">Private Feedback Sent</div><div class="priv-s" id="privS">Not posted on Google</div></div>
+      </div>
+      <div class="priv-row">📱 WhatsApp: <strong>+91 98290000097</strong></div>
+      <div class="priv-row">📧 Email: <strong>manager@skydine.com</strong></div>
+      <div class="priv-row">🪑 Table: <strong>Table No. 1</strong></div>
+    </div>
+    <div class="timer-box">
+      <div class="timer-lbl" id="timerL">MANAGER RESPONSE TIMER</div>
+      <div class="timer-num" id="timerN">00:30:00</div>
+      <div class="timer-sub" id="timerS">You can post on Google after this timer ends</div>
+    </div>
+    <div class="tl-box">
+      <div class="tl-lbl">WHAT HAPPENS NEXT</div>
+      <div class="tl-step"><div class="tl-dot done"></div><div class="tl-txt" id="tl1"><strong>Right now</strong> — Manager alert sent via WhatsApp & Email</div></div>
+      <div class="tl-step"><div class="tl-dot"></div><div class="tl-txt" id="tl2"><strong>Shortly</strong> — Manager will contact you personally</div></div>
+      <div class="tl-step"><div class="tl-dot"></div><div class="tl-txt" id="tl3"><strong>After 24 hours</strong> — You can post on Google if unresolved</div></div>
+    </div>
+    <div class="anon-note" id="anonBox" style="display:none">
+      🔒 <span id="anonT">No contact details shared — no follow up will be sent. Restaurant has your private feedback.</span>
+    </div>
+    <div class="skip-link" onclick="resetAll()">← Submit another feedback</div>
+  </div>
+
+  <!-- SCREEN 6: ESCALATION -->
+  <div class="screen" id="s6">
+    <div class="esc-box">
+      <div class="esc-icon">⚠️</div>
+      <div class="esc-title" id="escT">Time's Up!</div>
+      <div class="esc-msg" id="escM">Manager did not respond in time. You can now post your review on Google.</div>
+    </div>
+    <a class="g-btn" href="#" onclick="event.preventDefault();alert('Demo: Actual Google Review link hoga yahan.');">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      <span id="escG">Post on Google Reviews Now</span>
+    </a>
+    <div class="skip-link" onclick="resetAll()">← Start over</div>
+  </div>
+
+</div>
+<div class="footer">Powered by <span>ReviewPro</span> · Restaurant Reputation Management</div>
+
+<script>
+// ══ RANDOMIZED CONTENT DATABASE ══
+const DB = {
+  en:{
+    feelings:['','Terrible 😞','Not Good 😕','Average 😐','Good 😊','Excellent! 🤩'],
+    s1T:"How was your experience?",s1S:"Tap a star to rate your visit",
+    s2T:"What did you love? ✨",s2S:"Select all that apply",
+    s2L1:"Food & Drinks",s2L2:"Service & Ambiance",
+    s4T:"What went wrong?",s4S:"Select all — only manager will see this",
+    s4L1:"Food Issue",s4L2:"Service Issue",
+    kp:{food:"Food Quality",taste:"Great Taste",portion:"Good Portions",variety:"Menu Variety",service:"Fast Service",staff:"Friendly Staff",ambiance:"Great Ambiance",value:"Value for Money"},
+    bkp:{bfood:"Cold Food",btaste:"Bad Taste",bportion:"Small Portion",bquality:"Bad Quality",bservice:"Slow Service",bstaff:"Rude Staff",bclean:"Not Clean",bprice:"Overpriced"},
+    s3T:"Your Review is Ready! ✨",s3S:"Copy it and paste on Google Reviews",
+    pwL:"YOUR REVIEW",regenT:"Generate Different Version",copyT:"📋 Copy Review",
+    copiedT:"Copied! Now paste on Google Reviews",gBtnT:"Open Google Reviews",
+    descL:"Describe your issue",descP:"Please describe what happened in detail...",
+    descErr:"Please describe your issue before submitting",
+    phoneL:"Your WhatsApp number",subBadBtn:"Send Private Feedback",
+    s5T:"Feedback Received",s5S:"Manager has been alerted and will resolve this within 24 hours.",
+    privT:"Private Feedback Sent",privS:"Not posted on Google",
+    timerL:"MANAGER RESPONSE TIMER",timerS:"You can post on Google after this timer ends",
+    tl1:"<strong>Right now</strong> — Manager alert sent via WhatsApp & Email",
+    tl2:"<strong>Shortly</strong> — Manager will contact you personally",
+    tl3:"<strong>After 24 hours</strong> — You can post on Google if unresolved",
+    anonT:"No contact details shared — no follow up will be sent. Restaurant has your private feedback.",
+    escT:"Time's Up!",escM:"Manager did not respond. You can now post your review on Google.",escG:"Post on Google Reviews Now",
+    intros:["I recently visited Sky Dine in Ajmer and had a fantastic experience.","Just dined at Sky Dine, Ajmer and I must say it was outstanding.","Had a wonderful time at Sky Dine in Ajmer — highly recommend!","Sky Dine in Ajmer exceeded all my expectations during my recent visit.","Visited Sky Dine, Ajmer recently and was thoroughly impressed."],
+    outros:["Highly recommend to anyone looking for a great dining experience in Ajmer. Will definitely be back!","A must-visit restaurant in Ajmer. Will absolutely return soon!","One of the best dining spots in Ajmer. Cannot wait to visit again!","Sky Dine is now my go-to restaurant in Ajmer. 10/10 experience!","If you're in Ajmer and looking for great food, Sky Dine is the place to be!"],
+    phrases:{
+      food:["The food quality was absolutely exceptional.","Every dish was prepared with great care and quality.","The food was fresh, well-prepared, and absolutely delicious.","Outstanding food quality from start to finish.","The culinary standards at Sky Dine are truly impressive."],
+      taste:["The flavors were rich, authentic, and incredibly delicious.","Each bite was a burst of amazing flavors.","The taste was spot on — perfectly seasoned and deeply satisfying.","Flavors were bold, balanced, and absolutely memorable.","The food tasted like it was made with real passion and expertise."],
+      portion:["Portion sizes were very generous and completely satisfying.","We were impressed by the hearty, filling portions served.","The portions were more than enough — great value!","Every plate came loaded with food — very generous servings.","Portions were large and satisfying — left absolutely full."],
+      variety:["The menu has an impressive variety of dishes to choose from.","Loved the diverse menu options — something for everyone.","The variety on the menu is excellent — great selection.","From BBQ to Western cuisine, the menu covers it all beautifully.","The menu variety is one of Sky Dine's strongest points."],
+      service:["The service was incredibly quick and very attentive.","Staff served us promptly — no waiting at all.","Service was efficient, fast, and absolutely seamless.","From the moment we sat down, service was swift and professional.","The team here is fast, responsive, and truly customer-focused."],
+      staff:["The staff was extremely friendly, warm, and genuinely helpful.","Every team member was courteous, attentive, and very polite.","The hospitality here is top-notch — staff made us feel very welcome.","Staff went above and beyond to ensure we had a great time.","The team at Sky Dine is one of the most welcoming I've encountered."],
+      ambiance:["The ambiance is beautiful — very well designed and comfortable.","The decor and atmosphere create a wonderful dining environment.","Loved the vibe — elegant, cozy, and very well maintained.","The restaurant's ambiance adds so much to the overall experience.","Great interior, pleasant lighting — a very inviting atmosphere."],
+      value:["Sky Dine offers incredible value for money — worth every rupee.","Exceptional food at very reasonable prices — great deal!","The prices are very fair for the quality and quantity served.","Best value-for-money dining experience I've had in a long time.","You get much more than what you pay for at Sky Dine."]
+    }
+  },
+  hi:{
+    feelings:['','बहुत बुरा 😞','ठीक नहीं 😕','औसत 😐','अच्छा 😊','जबरदस्त! 🤩'],
+    s1T:"आपका अनुभव कैसा रहा?",s1S:"स्टार दबाकर रेटिंग दें",
+    s2T:"क्या अच्छा लगा? ✨",s2S:"जो भी पसंद आया सब चुनें",
+    s2L1:"खाना और पेय",s2L2:"सेवा और माहौल",
+    s4T:"क्या समस्या आई?",s4S:"चुनें — सिर्फ मैनेजर देखेगा",
+    s4L1:"खाने की समस्या",s4L2:"सेवा की समस्या",
+    kp:{food:"खाने की क्वालिटी",taste:"लाजवाब स्वाद",portion:"अच्छी मात्रा",variety:"मेनू विविधता",service:"तेज सेवा",staff:"मिलनसार स्टाफ",ambiance:"सुंदर माहौल",value:"पैसा वसूल"},
+    bkp:{bfood:"खाना ठंडा था",btaste:"स्वाद अच्छा नहीं",bportion:"मात्रा कम थी",bquality:"गुणवत्ता खराब",bservice:"सेवा बहुत धीमी",bstaff:"स्टाफ का व्यवहार",bclean:"सफाई नहीं थी",bprice:"कीमत ज्यादा थी"},
+    s3T:"आपका रिव्यू तैयार है! ✨",s3S:"कॉपी करें और Google पर पेस्ट करें",
+    pwL:"आपका रिव्यू",regenT:"दूसरा वर्शन बनाएं",copyT:"📋 रिव्यू कॉपी करें",
+    copiedT:"कॉपी हो गया! अब Google Reviews पर पेस्ट करें",gBtnT:"Google Reviews खोलें",
+    descL:"अपनी समस्या बताएं",descP:"कृपया विस्तार से बताएं क्या हुआ...",
+    descErr:"सबमिट से पहले कृपया अपनी समस्या बताएं",
+    phoneL:"आपका WhatsApp नंबर",subBadBtn:"प्राइवेट फीडबैक भेजें",
+    s5T:"फीडबैक मिल गया",s5S:"मैनेजर को अलर्ट कर दिया गया है। 24 घंटे में समाधान होगा।",
+    privT:"प्राइवेट फीडबैक भेजा गया",privS:"Google पर पोस्ट नहीं हुआ",
+    timerL:"मैनेजर रिस्पॉन्स टाइमर",timerS:"टाइमर खत्म होने के बाद Google पर पोस्ट कर सकते हैं",
+    tl1:"<strong>अभी</strong> — मैनेजर को WhatsApp और Email अलर्ट गया",
+    tl2:"<strong>जल्द ही</strong> — मैनेजर आपसे व्यक्तिगत रूप से मिलेंगे",
+    tl3:"<strong>24 घंटे बाद</strong> — अगर समाधान नहीं हुआ तो Google पर रिव्यू दे सकते हैं",
+    anonT:"कोई संपर्क जानकारी नहीं दी — कोई फॉलो अप नहीं भेजा जाएगा।",
+    escT:"24 घंटे हो गए!",escM:"मैनेजर ने समय पर जवाब नहीं दिया। अब आप Google पर रिव्यू पोस्ट कर सकते हैं।",escG:"अभी Google पर रिव्यू पोस्ट करें",
+    intros:["मैंने हाल ही में Sky Dine, अजमेर में खाना खाया और अनुभव बेहद शानदार रहा।","Sky Dine, अजमेर में डाइनिंग का अनुभव सच में लाजवाब था।","Sky Dine अजमेर में मेरा अनुभव उम्मीद से भी बेहतर रहा।","अजमेर के Sky Dine में खाने का मौका मिला — बेहद प्रभावित हुआ।","Sky Dine, अजमेर एक शानदार रेस्तरां है जिसकी मैं सिफारिश करता/करती हूँ।"],
+    outros:["अजमेर में अच्छे खाने की तलाश करने वालों को Sky Dine जरूर जाना चाहिए। दोबारा जरूर आऊंगा/आऊंगी!","Sky Dine अजमेर का एक बेहतरीन रेस्तरां है। जल्द ही वापस आने की योजना है!","अजमेर में बेहतरीन डाइनिंग के लिए Sky Dine सबसे अच्छा विकल्प है!","Sky Dine अब मेरा पसंदीदा रेस्तरां बन गया है। 10/10 अनुभव!","अजमेर आएं तो Sky Dine जरूर आजमाएं — निराश नहीं होंगे!"],
+    phrases:{
+      food:["खाने की क्वालिटी बेहद उम्दा और शानदार थी।","हर व्यंजन बड़े ध्यान और गुणवत्ता के साथ तैयार किया गया था।","खाना ताज़ा, अच्छी तरह पका हुआ और बेहद स्वादिष्ट था।","शुरू से अंत तक खाने की क्वालिटी बेमिसाल थी।","Sky Dine के रसोई के मानक सच में प्रभावशाली हैं।"],
+      taste:["स्वाद समृद्ध, असली और अविश्वसनीय रूप से स्वादिष्ट था।","हर निवाला अद्भुत स्वाद का अनुभव था।","स्वाद एकदम सटीक था — पूरी तरह से मसालेदार और संतोषजनक।","स्वाद तीव्र, संतुलित और यादगार था।","खाना जुनून और विशेषज्ञता से बना लगा।"],
+      portion:["मात्रा बहुत उदार और पूरी तरह संतोषजनक थी।","हार्दिक, भरपूर मात्रा देखकर प्रभावित हो गए।","मात्रा पर्याप्त से अधिक थी — बेहतरीन मूल्य!","हर प्लेट खाने से भरपूर आई — बहुत उदार परोसना।","मात्रा बड़ी और संतोषजनक — बिल्कुल भरे पेट गए।"],
+      variety:["मेनू में चुनने के लिए विकल्पों की एक प्रभावशाली विविधता है।","विविध मेनू विकल्प पसंद आए — सभी के लिए कुछ न कुछ।","मेनू में विविधता उत्कृष्ट है — बेहतरीन चयन।","BBQ से लेकर वेस्टर्न तक, मेनू सब कुछ खूबसूरती से कवर करता है।","मेनू विविधता Sky Dine के सबसे मजबूत पहलुओं में से एक है।"],
+      service:["सेवा अविश्वसनीय रूप से तेज और बहुत ध्यान देने वाली थी।","स्टाफ ने तुरंत सेवा दी — बिल्कुल प्रतीक्षा नहीं।","सेवा कुशल, तेज और बिल्कुल निर्बाध थी।","बैठते ही सेवा तेज और पेशेवर थी।","यहाँ की टीम तेज, उत्तरदायी और सच में ग्राहक-केंद्रित है।"],
+      staff:["स्टाफ बेहद दोस्ताना, गर्मजोशी से भरा और सच में मददगार था।","हर टीम सदस्य शिष्ट, ध्यान देने वाला और बहुत विनम्र था।","यहाँ की मेहमाननवाजी अव्वल दर्जे की है — स्टाफ ने हमें बहुत स्वागत महसूस कराया।","स्टाफ ने हमारा अच्छा समय सुनिश्चित करने के लिए हर संभव प्रयास किया।","Sky Dine की टीम सबसे स्वागत करने वाली टीमों में से एक है।"],
+      ambiance:["माहौल खूबसूरत है — बहुत अच्छी तरह डिजाइन किया गया और आरामदायक।","सजावट और वातावरण एक अद्भुत डाइनिंग वातावरण बनाता है।","वाइब पसंद आई — सुरुचिपूर्ण, आरामदायक और बहुत अच्छी तरह बनाए रखा।","रेस्तरां का माहौल समग्र अनुभव में बहुत कुछ जोड़ता है।","शानदार इंटीरियर, सुखद रोशनी — बहुत आकर्षक वातावरण।"],
+      value:["Sky Dine पैसे के लिए अविश्वसनीय मूल्य प्रदान करता है — हर रुपए की कीमत।","बहुत उचित कीमतों पर असाधारण खाना — बेहतरीन सौदा!","परोसी गई गुणवत्ता और मात्रा के लिए कीमतें बहुत उचित हैं।","लंबे समय में मेरा सबसे अच्छा पैसा-वसूल डाइनिंग अनुभव।","Sky Dine में आप जो भुगतान करते हैं उससे बहुत अधिक मिलता है।"]
+    }
+  },
+  hg:{
+    feelings:['','Bahut bura 😞','Theek nahi 😕','Average 😐','Accha laga 😊','Zabardast! 🤩'],
+    s1T:"Aapka experience kaisa raha?",s1S:"Star dabake apni rating do",
+    s2T:"Kya accha laga? ✨",s2S:"Jo bhi pasand aaya sab select karo",
+    s2L1:"Khana aur Drinks",s2L2:"Service aur Mahaul",
+    s4T:"Kya problem aayi?",s4S:"Select karo — sirf manager dekhega",
+    s4L1:"Khane ki Problem",s4L2:"Service ki Problem",
+    kp:{food:"Khane ki Quality",taste:"Lajawaab Taste",portion:"Bade Portions",variety:"Menu Variety",service:"Fast Service",staff:"Friendly Staff",ambiance:"Sundar Mahaul",value:"Paisa Vasool"},
+    bkp:{bfood:"Khana thanda tha",btaste:"Taste accha nahi",bportion:"Portion chhota",bquality:"Quality kharab",bservice:"Service slow thi",bstaff:"Staff ka behavior",bclean:"Safai nahi thi",bprice:"Price zyada tha"},
+    s3T:"Tera review ready hai! ✨",s3S:"Copy karo aur Google par paste karo",
+    pwL:"TERA REVIEW",regenT:"Alag version banao",copyT:"📋 Review Copy Karo",
+    copiedT:"Copy ho gaya! Ab Google Reviews par paste karo",gBtnT:"Google Reviews Kholo",
+    descL:"Apni problem batao",descP:"Please detail mein batao kya hua...",
+    descErr:"Submit karne se pehle apni problem batao",
+    phoneL:"Tera WhatsApp number",subBadBtn:"Private Feedback Bhejo",
+    s5T:"Feedback Mil Gaya!",s5S:"Manager ko alert kar diya gaya hai. 24 ghante mein resolve hoga.",
+    privT:"Private Feedback Bheja Gaya",privS:"Google par post nahi hua",
+    timerL:"MANAGER RESPONSE TIMER",timerS:"Timer khatam hone ke baad Google par post kar sakte ho",
+    tl1:"<strong>Abhi</strong> — Manager ko WhatsApp aur Email alert gaya",
+    tl2:"<strong>Jald hi</strong> — Manager tumse personally contact karenge",
+    tl3:"<strong>24 ghante baad</strong> — Agar resolve nahi hua to Google par review de sakte ho",
+    anonT:"Koi contact details share nahi ki — koi follow up nahi bheja jayega. Restaurant ko tumhara feedback privately mil gaya.",
+    escT:"24 Ghante Ho Gaye!",escM:"Manager ne time par respond nahi kiya. Ab tum Google par apna review post kar sakte ho.",escG:"Abhi Google par Review Post Karo",
+    intros:["Maine recently Sky Dine, Ajmer mein khana khaya aur experience ekdum zabardast tha.","Sky Dine, Ajmer mein dining ka experience sach mein lajawaab tha.","Sky Dine Ajmer mein mera experience umeed se bhi behtar raha.","Ajmer ke Sky Dine mein jaane ka mauka mila — bahut impressed hua/hui.","Sky Dine, Ajmer ek shandar restaurant hai jise main zaroor recommend karunga/karungi."],
+    outros:["Ajmer mein accha khana dhundhne waalon ko Sky Dine zaroor jaana chahiye. Dobara zaroor aaunga/aaungi!","Sky Dine Ajmer ka ek behtareen restaurant hai. Jald hi wapas aane ki plan hai!","Ajmer mein best dining ke liye Sky Dine sabse accha option hai!","Sky Dine ab mera favourite restaurant ban gaya hai. 10/10 experience!","Ajmer aao to Sky Dine zaroor try karo — disappointed nahi hoge!"],
+    phrases:{
+      food:["Khane ki quality bilkul exceptional aur shandar thi.","Har dish bahut care aur quality ke saath banayi gayi thi.","Khana fresh, ache se bana hua aur ekdum delicious tha.","Start se end tak khane ki quality behtareen thi.","Sky Dine ke kitchen ke standards sach mein impressive hain."],
+      taste:["Flavors rich, authentic aur incredibly delicious the.","Har bite amazing flavors ka ek blast tha.","Taste bilkul sahi tha — perfectly seasoned aur deeply satisfying.","Flavors bold, balanced aur ekdum memorable the.","Khana passion aur expertise se bana laga."],
+      portion:["Portions bahut generous aur poori tarah satisfying the.","Hearty, filling portions dekh ke impressed ho gaye.","Portion kaafi zyada tha — great value!","Har plate khane se bhari aayi — bahut generous servings.","Portions bade aur satisfying — bilkul full hokar gaye."],
+      variety:["Menu mein chunne ke liye options ki ek impressive variety hai.","Diverse menu options bahut pasand aaye — sab ke liye kuch na kuch.","Menu mein variety excellent hai — great selection.","BBQ se lekar Western tak, menu sab kuch khubsurti se cover karta hai.","Menu variety Sky Dine ke sabse strong points mein se ek hai."],
+      service:["Service incredibly quick aur bahut attentive thi.","Staff ne turant serve kiya — bilkul wait nahi.","Service efficient, fast aur absolutely seamless thi.","Baithte hi service swift aur professional thi.","Yahan ki team fast, responsive aur truly customer-focused hai."],
+      staff:["Staff ekdum friendly, warm aur genuinely helpful tha.","Har team member courteous, attentive aur bahut polite tha.","Yahan ki hospitality top-notch hai — staff ne hume bahut welcome feel karaya.","Staff ne humara accha time ensure karne ke liye har sambhav koshish ki.","Sky Dine ki team sabse welcoming teams mein se ek hai."],
+      ambiance:["Ambiance beautiful hai — bahut ache se designed aur comfortable.","Decor aur atmosphere ek wonderful dining environment banata hai.","Vibe bahut pasand aayi — elegant, cozy aur bahut ache se maintained.","Restaurant ka ambiance overall experience mein bahut kuch add karta hai.","Great interior, pleasant lighting — bahut inviting atmosphere."],
+      value:["Sky Dine paisa ke liye incredible value offer karta hai — har rupee ki keemat.","Bahut reasonable prices par exceptional khana — great deal!","Serve ki gayi quality aur quantity ke liye prices bahut fair hain.","Lamba samay mein mera best value-for-money dining experience.","Sky Dine mein jo pay karte ho usse bahut zyada milta hai."]
+    }
+  }
+};
+
+let lang='en', curR=0, timerInt=null;
+const DEMO_SECS=30; // Demo: 30 sec. Real: 86400
+
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function r(id){ return document.getElementById(id); }
+function txt(id,v){ const e=r(id); if(e) e.textContent=v; }
+function htm(id,v){ const e=r(id); if(e) e.innerHTML=v; }
+
+function setLang(l){
+  lang=l;
+  const d=DB[l];
+  // Stars screen
+  txt('s1T',d.s1T); txt('s1S',d.s1S);
+  // Good KP screen
+  txt('s2T',d.s2T); txt('s2S',d.s2S);
+  txt('s2L1',d.s2L1); txt('s2L2',d.s2L2);
+  Object.keys(d.kp).forEach(k=>txt('k_'+k,d.kp[k]));
+  // Prompt screen
+  txt('s3T',d.s3T); txt('s3S',d.s3S);
+  txt('pwL',d.pwL); txt('regenT',d.regenT);
+  txt('copyT',d.copyT); txt('copiedT',d.copiedT);
+  txt('gBtnT',d.gBtnT);
+  // Bad KP screen
+  txt('s4T',d.s4T); txt('s4S',d.s4S);
+  txt('s4L1',d.s4L1); txt('s4L2',d.s4L2);
+  Object.keys(d.bkp).forEach(k=>txt('k_'+k,d.bkp[k]));
+  txt('descL',d.descL);
+  r('descTa').placeholder=d.descP;
+  txt('descErr',d.descErr);
+  txt('phoneL',d.phoneL);
+  r('subBadBtn').textContent=d.subBadBtn;
+  // Bad result
+  txt('s5T',d.s5T); txt('s5S',d.s5S);
+  txt('privT',d.privT); txt('privS',d.privS);
+  txt('timerL',d.timerL); txt('timerS',d.timerS);
+  htm('tl1',d.tl1); htm('tl2',d.tl2); htm('tl3',d.tl3);
+  txt('anonT',d.anonT);
+  // Escalation
+  txt('escT',d.escT); txt('escM',d.escM); txt('escG',d.escG);
+  show('s1');
+}
+
+// Stars
+document.querySelectorAll('.star').forEach(s=>{
+  s.addEventListener('click',()=>{
+    curR=+s.dataset.v;
+    setStars(curR);
+    r('starLbl').textContent=DB[lang].feelings[curR];
+    setTimeout(()=>show(curR>=4?'s2':'s4'),500);
+  });
+  s.addEventListener('mouseenter',()=>{ if(!curR) previewS(+s.dataset.v); });
+  s.addEventListener('mouseleave',()=>{ if(!curR) previewS(0); });
+});
+function previewS(v){ document.querySelectorAll('.star').forEach(s=>s.classList.toggle('lit',+s.dataset.v<=v)); }
+function setStars(v){ document.querySelectorAll('.star').forEach(s=>s.classList.toggle('lit',+s.dataset.v<=v)); }
+
+// Chips
+document.querySelectorAll('.kp-chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    const pos=!c.dataset.k.startsWith('b');
+    c.classList.toggle(pos?'sp':'sn');
+  });
+});
+
+// Build prompt with full randomization
+function buildPrompt(){
+  const d=DB[lang];
+  const sel=[...document.querySelectorAll('#s2 .kp-chip.sp')].map(c=>c.dataset.k);
+  
+  // Pick random intro
+  let parts=[pick(d.intros)];
+  
+  // Shuffle selected keys for different sentence order
+  const shuffled=[...sel].sort(()=>Math.random()-0.5);
+  
+  // Pick random phrase for each selected key
+  shuffled.forEach(k=>{
+    if(d.phrases[k]) parts.push(pick(d.phrases[k]));
+  });
+  
+  // If nothing selected, pick 2 random phrases
+  if(sel.length===0){
+    const keys=Object.keys(d.phrases);
+    const k1=keys[Math.floor(Math.random()*keys.length)];
+    const k2=keys[Math.floor(Math.random()*keys.length)];
+    parts.push(pick(d.phrases[k1]));
+    if(k1!==k2) parts.push(pick(d.phrases[k2]));
+  }
+  
+  // Pick random outro
+  parts.push(pick(d.outros));
+  
+  r('promptText').textContent=parts.join(' ');
+  show('s3');
+}
+
+// Copy
+function doCopy(){
+  const text=r('promptText').textContent;
+  const ok=r('copyOk');
+  const copy=()=>{ ok.style.display='block'; setTimeout(()=>ok.style.display='none',3000); };
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(copy).catch(()=>fallbackCopy(text,copy));
+  } else { fallbackCopy(text,copy); }
+}
+function fallbackCopy(text,cb){
+  const ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try{ document.execCommand('copy'); cb(); }catch(e){}
+  document.body.removeChild(ta);
+}
+
+// Submit Bad
+function submitBad(){
+  const desc=r('descTa').value.trim();
+  const errEl=r('descErr');
+  if(!desc){ errEl.style.display='block'; return; }
+  errEl.style.display='none';
+  const phone=r('phoneIn').value.trim();
+  r('anonBox').style.display=phone?'none':'block';
+  show('s5');
+  startTimer();
+}
+
+// Timer
+function startTimer(){
+  let t=DEMO_SECS;
+  updateTimer(t);
+  timerInt=setInterval(()=>{
+    t--;
+    updateTimer(t);
+    if(t<=0){ clearInterval(timerInt); show('s6'); }
+  },1000);
+}
+function updateTimer(t){
+  const h=Math.floor(t/3600),m=Math.floor((t%3600)/60),s=t%60;
+  r('timerN').textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  r(id).classList.add('active');
+}
+
+function resetAll(){
+  curR=0;
+  if(timerInt) clearInterval(timerInt);
+  previewS(0);
+  r('starLbl').textContent='';
+  document.querySelectorAll('.kp-chip').forEach(c=>c.classList.remove('sp','sn'));
+  r('descTa').value='';
+  r('phoneIn').value='';
+  r('descErr').style.display='none';
+  r('copyOk').style.display='none';
+  show('s0');
+}
+</script>
+</body>
+</html>
